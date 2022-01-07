@@ -4,6 +4,8 @@ import styles from '@/styles/Event.module.css';
 import Link from 'next/link';
 import { FaPencilAlt, FaTimes } from 'react-icons/fa';
 import Image from 'next/image';
+// eslint-disable-next-line no-undef
+const qs = require('qs');
 
 export default function EventPage({ evt }) {
   // const deleteEvent = (e) => {
@@ -25,21 +27,26 @@ export default function EventPage({ evt }) {
         </div>
 
         <span>
-          {evt.date} at {evt.time}
+          {new Date(evt.attributes.date).toLocaleDateString('en-US')} at{' '}
+          {evt.attributes.time}
         </span>
-        <h1>{evt.name}</h1>
-        {evt.image && (
+        <h1>{evt.attributes.name}</h1>
+        {evt.attributes.name && (
           <div className={styles.image}>
-            <Image src={evt.image} width={960} height={600} />
+            <Image
+              src={evt.attributes.image.data.attributes.formats.large.url}
+              width={960}
+              height={600}
+            />
           </div>
         )}
 
         <h3>Performers:</h3>
-        <p>{evt.performers}</p>
+        <p>{evt.attributes.performers}</p>
         <h3>Description:</h3>
-        <p>{evt.description}</p>
-        <h3>Venue: {evt.venue}</h3>
-        <p>{evt.address}</p>
+        <p>{evt.attributes.description}</p>
+        <h3>Venue: {evt.attributes.venue}</h3>
+        <p>{evt.attributes.address}</p>
 
         <Link href="/events">
           <a className={styles.back}>{'<'} Go Back</a>
@@ -53,25 +60,34 @@ export async function getStaticPaths() {
   const res = await fetch(`${API_URL}/api/events`);
   const events = await res.json();
 
-  const paths = events.map((evt) => ({
-    params: { slug: evt.slug }
+  const paths = events.data.map((evt) => ({
+    params: { slug: evt.id.toString() },
   }));
 
   return {
     paths,
-    fallback: true
+    fallback: true,
   };
 }
 
 export async function getStaticProps({ params: { slug } }) {
-  const res = await fetch(`${API_URL}/api/events/${slug}`);
-  const events = await res.json();
+  const query = qs.stringify(
+    {
+      populate: ['image'],
+    },
+    {
+      encodeValuesOnly: true,
+    }
+  );
+
+  const res = await fetch(`${API_URL}/api/events/${slug}?${query}`);
+  const event = await res.json();
 
   return {
     props: {
-      evt: events[0]
+      evt: event.data,
     },
-    revalidate: 1
+    revalidate: 1,
   };
 }
 

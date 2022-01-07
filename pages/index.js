@@ -2,6 +2,8 @@ import Layout from '@/components/Layout';
 import EventItem from '@/components/EventItem';
 import { API_URL } from '@/config/index';
 import Link from 'next/link';
+// eslint-disable-next-line no-undef
+const qs = require('qs');
 
 export default function HomePage({ events }) {
   return (
@@ -24,11 +26,20 @@ export default function HomePage({ events }) {
 }
 
 export async function getStaticProps() {
-  const res = await fetch(`${API_URL}/api/events`);
+  const query = qs.stringify(
+    {
+      populate: ['image'],
+    },
+    {
+      encodeValuesOnly: true,
+    }
+  );
+  console.log(query);
+  const res = await fetch(`${API_URL}/api/events?${query}`);
   const events = await res.json();
 
   return {
-    props: { events: events.slice(0, 3) },
-    revalidate: 1
+    props: { events: events.data.slice(0, 3) },
+    revalidate: 1,
   };
 }
