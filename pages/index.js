@@ -34,7 +34,7 @@ export async function getStaticProps() {
       encodeValuesOnly: true,
     }
   );
-  console.log(query);
+
   const res = await fetch(`${API_URL}/api/events?${query}`);
   const events = await res.json();
 
