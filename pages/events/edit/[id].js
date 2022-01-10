@@ -186,7 +186,7 @@ export default function EditEventPage({ evt }) {
   );
 }
 
-export async function getServerSideProps({ params: { id } }) {
+export async function getServerSideProps({ params: { id }, req }) {
   const query = qs.stringify(
     {
       populate: ['image'],
@@ -195,6 +195,8 @@ export async function getServerSideProps({ params: { id } }) {
       encodeValuesOnly: true,
     }
   );
+
+  console.log(req.headers.cookie);
 
   const res = await fetch(`${API_URL}/api/events/${id}?${query}`);
   const event = await res.json();

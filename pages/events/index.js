@@ -26,7 +26,7 @@ export async function getServerSideProps({ query: { page = 1 } }) {
       populate: ['image'],
       pagination: {
         page: +page,
-        pageSize: 2,
+        pageSize: 5,
       },
     },
 
