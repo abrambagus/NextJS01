@@ -24,17 +24,17 @@ export default function Header() {
               <a>Events</a>
             </Link>
           </li>
-          <li>
-            <Link href="/account/dashboard">
-              <a>Dashboard</a>
-            </Link>
-          </li>
           {user ? (
             // if logged in
             <>
               <li>
                 <Link href="/events/add">
                   <a>Add Events</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/account/dashboard">
+                  <a>Dashboard</a>
                 </Link>
               </li>
               <li>
