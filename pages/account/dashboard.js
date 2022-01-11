@@ -21,6 +21,7 @@ export default function DashboardPage({ events, token }) {
         },
       });
 
+      // eslint-disable-next-line no-unused-vars
       const data = await res.json();
 
       if (!res.ok) {
